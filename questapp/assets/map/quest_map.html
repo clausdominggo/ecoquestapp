@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EcoQuest Map</title>
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    html,
+    body,
+    #map {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: #f1f7f2;
+    }
+
+    .quest-dot {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      border: 2px solid #ffffff;
+      box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.2);
+    }
+
+    .current-location-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: #0e7a5a;
+      border: 3px solid #ffffff;
+      box-shadow: 0 0 0 6px rgba(14, 122, 90, 0.18);
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    const map = L.map('map', {
+      zoomControl: true,
+      attributionControl: true,
+    }).setView([-6.5985, 106.7990], 16);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 20,
+      attribution: '&copy; OpenStreetMap contributors',
+    }).addTo(map);
+
+    const markerLayer = L.layerGroup().addTo(map);
+  const currentLocationLayer = L.layerGroup().addTo(map);
+
+    function getColorByType(type) {
+      switch ((type || '').toLowerCase()) {
+        case 'ar':
+          return '#1E88E5';
+        case 'gps':
+          return '#2E7D32';
+        case 'quiz':
+          return '#F57C00';
+        case 'plant id':
+          return '#8E24AA';
+        case 'treasure hunt':
+          return '#FBC02D';
+        case 'puzzle':
+          return '#D32F2F';
+        default:
+          return '#455A64';
+      }
+    }
+
+    function createMarkerIcon(color) {
+      return L.divIcon({
+        className: '',
+        html: `<div class="quest-dot" style="background:${color};"></div>`,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8],
+      });
+    }
+
+    function createCurrentLocationIcon() {
+      return L.divIcon({
+        className: '',
+        html: '<div class="current-location-dot"></div>',
+        iconSize: [18, 18],
+        iconAnchor: [9, 9],
+      });
+    }
+
+    function notifyMarkerTap(quest) {
+      if (window.QuestMarkerTap && typeof window.QuestMarkerTap.postMessage === 'function') {
+        window.QuestMarkerTap.postMessage(JSON.stringify(quest));
+      }
+    }
+
+    window.setQuestMarkers = function setQuestMarkers(rawQuests) {
+      const quests = Array.isArray(rawQuests)
+        ? rawQuests
+        : typeof rawQuests === 'string'
+        ? JSON.parse(rawQuests)
+        : [];
+
+      markerLayer.clearLayers();
+      const bounds = [];
+
+      quests.forEach((quest) => {
+        const lat = Number(quest.latitude);
+        const lng = Number(quest.longitude);
+
+        if (Number.isNaN(lat) || Number.isNaN(lng)) {
+          return;
+        }
+
+        const marker = L.marker([lat, lng], {
+          icon: createMarkerIcon(getColorByType(quest.type)),
+        }).addTo(markerLayer);
+
+        marker.on('click', () => notifyMarkerTap(quest));
+        bounds.push([lat, lng]);
+      });
+
+      if (bounds.length > 0) {
+        map.fitBounds(bounds, { padding: [40, 40] });
+      }
+    };
+
+    window.setCurrentLocationMarker = function setCurrentLocationMarker(rawLocation) {
+      const location = typeof rawLocation === 'string'
+        ? JSON.parse(rawLocation)
+        : rawLocation || {};
+
+      const lat = Number(location.latitude);
+      const lng = Number(location.longitude);
+      const accuracy = Number(location.accuracy);
+
+      if (Number.isNaN(lat) || Number.isNaN(lng)) {
+        return;
+      }
+
+      currentLocationLayer.clearLayers();
+
+      const marker = L.marker([lat, lng], {
+        icon: createCurrentLocationIcon(),
+      }).addTo(currentLocationLayer);
+
+      if (!Number.isNaN(accuracy) && accuracy > 0) {
+        L.circle([lat, lng], {
+          radius: accuracy,
+          color: '#0e7a5a',
+          weight: 2,
+          opacity: 0.65,
+          fillColor: '#0e7a5a',
+          fillOpacity: 0.15,
+        }).addTo(currentLocationLayer);
+      }
+
+      marker.bindPopup(
+        `Lokasi Anda Saat Ini<br/>Akurasi: ${Number.isNaN(accuracy) ? '-' : Math.round(accuracy) + 'm'}`
+      ).openPopup();
+
+      map.setView([lat, lng], 18);
+    };
+  </script>
+</body>
+</html>
