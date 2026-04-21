@@ -1,17 +1,33 @@
 # questapp
 
-A new Flutter project.
+Folder ini berisi aplikasi mobile Flutter untuk visitor.
 
-## Getting Started
+## Fungsi
 
-This project is a starting point for a Flutter application.
+- Login/register visitor
+- Main quest dari peta
+- Quiz, GPS, AR mock, plant ID mock, treasure hunt
+- Result screen, leaderboard, voucher, dan profil user
 
-A few resources to get you started if this is your first Flutter project:
+## Cara Menjalankan
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+```bash
+cd questapp
+flutter pub get
+flutter run
+```
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Setting API
+
+- Jalankan backend dulu sebelum membuka app mobile
+- Jika memakai device fisik, buka menu `Settings` di app lalu isi custom API URL ke alamat backend yang bisa diakses device
+- Contoh:
+
+```text
+http://192.168.1.10:8000/api
+```
+
+## Catatan
+
+- Emulator Android biasanya bisa memakai `localhost` lebih mudah
+- Panduan lengkap ada di [README utama](../README.md)
