@@ -5,6 +5,7 @@ class ArQuestScreen extends StatefulWidget {
   final VoidCallback onComplete;
 
   const ArQuestScreen({
+    super.key,
     required this.quest,
     required this.onComplete,
   });
@@ -171,10 +172,10 @@ class _ArQuestScreenState extends State<ArQuestScreen>
                       height: 230,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        border: Border.all(color: const Color(0xFF22C55E).withOpacity(0.55), width: 2),
+                        border: Border.all(color: const Color(0xFF22C55E).withValues(alpha: 0.55), width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF22C55E).withOpacity(0.18),
+                            color: const Color(0xFF22C55E).withValues(alpha: 0.18),
                             blurRadius: 40,
                             spreadRadius: 12,
                           ),
@@ -188,7 +189,7 @@ class _ArQuestScreenState extends State<ArQuestScreen>
                             height: 160,
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: Colors.white.withOpacity(0.05),
+                              color: Colors.white.withValues(alpha: 0.05),
                             ),
                           ),
                           const Icon(
@@ -231,9 +232,9 @@ class _ArQuestScreenState extends State<ArQuestScreen>
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
                           decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.12),
+                            color: Colors.white.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(999),
-                            border: Border.all(color: Colors.white.withOpacity(0.12)),
+                            border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
                           ),
                           child: Text(
                             'Tracking failures: $_trackingFailures / 3',
@@ -246,7 +247,7 @@ class _ArQuestScreenState extends State<ArQuestScreen>
                             width: double.infinity,
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: const Color(0xFFFEF3C7).withOpacity(0.96),
+                              color: const Color(0xFFFEF3C7).withValues(alpha: 0.96),
                               borderRadius: BorderRadius.circular(16),
                             ),
                             child: const Text(
@@ -279,7 +280,7 @@ class _ArQuestScreenState extends State<ArQuestScreen>
                   color: _secondsRemaining <= 10 ? Colors.red : Colors.white,
                   width: 3,
                 ),
-                color: Colors.black.withOpacity(0.35),
+                color: Colors.black.withValues(alpha: 0.35),
               ),
               child: Center(
                 child: Text(
@@ -302,7 +303,7 @@ class _ArQuestScreenState extends State<ArQuestScreen>
               child: Container(
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.96),
+                  color: Colors.white.withValues(alpha: 0.96),
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Column(
@@ -408,7 +409,7 @@ class _ArGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF60A5FA).withOpacity(0.12)
+      ..color = const Color(0xFF60A5FA).withValues(alpha: 0.12)
       ..strokeWidth = 1;
 
     for (double x = 0; x < size.width; x += 32) {

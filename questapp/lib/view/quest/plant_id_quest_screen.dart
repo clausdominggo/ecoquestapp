@@ -181,7 +181,7 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                   color: _secondsRemaining <= 10 ? Colors.redAccent : Colors.white,
                   width: 3,
                 ),
-                color: Colors.white.withOpacity(0.08),
+                color: Colors.white.withValues(alpha: 0.08),
               ),
               child: Center(
                 child: Text(
@@ -221,10 +221,10 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                       height: 320,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(28),
-                        border: Border.all(color: const Color(0xFF22C55E).withOpacity(0.55), width: 2),
+                        border: Border.all(color: const Color(0xFF22C55E).withValues(alpha: 0.55), width: 2),
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF22C55E).withOpacity(0.15),
+                            color: const Color(0xFF22C55E).withValues(alpha: 0.15),
                             blurRadius: 34,
                             spreadRadius: 8,
                           ),
@@ -253,7 +253,7 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                               child: Container(
                                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                                 decoration: BoxDecoration(
-                                  color: Colors.black.withOpacity(0.35),
+                                  color: Colors.black.withValues(alpha: 0.35),
                                   borderRadius: BorderRadius.circular(999),
                                 ),
                                 child: const Text(
@@ -296,7 +296,7 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.42),
+                                    color: Colors.black.withValues(alpha: 0.42),
                                     borderRadius: BorderRadius.circular(16),
                                   ),
                                   child: Text(
@@ -325,14 +325,14 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                       child: Container(
                         padding: const EdgeInsets.fromLTRB(16, 16, 16, 18),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.97),
+                          color: Colors.white.withValues(alpha: 0.97),
                           borderRadius: const BorderRadius.only(
                             topLeft: Radius.circular(26),
                             topRight: Radius.circular(26),
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.18),
+                              color: Colors.black.withValues(alpha: 0.18),
                               blurRadius: 24,
                               offset: const Offset(0, -4),
                             ),
@@ -488,7 +488,7 @@ class _PlantIdQuestScreenState extends State<PlantIdQuestScreen> {
                                       width: double.infinity,
                                       alignment: Alignment.center,
                                       decoration: BoxDecoration(
-                                        color: Colors.white.withOpacity(0.65),
+                                        color: Colors.white.withValues(alpha: 0.65),
                                         borderRadius: BorderRadius.circular(14),
                                       ),
                                       child: Text(
@@ -554,7 +554,7 @@ class _PlantScanGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFF22C55E).withOpacity(0.08)
+      ..color = const Color(0xFF22C55E).withValues(alpha: 0.08)
       ..strokeWidth = 1;
 
     for (double x = 0; x < size.width; x += 30) {

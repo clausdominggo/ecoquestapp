@@ -64,8 +64,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
       }
     }
 
-    setState(() {
-    });
+    setState(() {});
   }
 
   void _resetToDefaults() async {
@@ -84,9 +83,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     return Scaffold(
@@ -126,7 +123,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     const SizedBox(height: 16),
                     const Text(
-                      'Contoh: http://localhost:8000/api (dengan ADB reverse)',
+                      'Contoh LAN: http://192.168.1.2:8000/api',
                       style: TextStyle(
                         fontSize: 12,
                         color: Color(0xFF8B7355),
@@ -151,11 +148,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               controller: _apiUrlController,
               keyboardType: TextInputType.url,
               decoration: InputDecoration(
-                hintText: 'http://localhost:8000/api',
-                prefixIcon: const Icon(Icons.language, color: AppPalette.deepGreen),
+                hintText: 'http://192.168.1.2:8000/api',
+                prefixIcon: const Icon(
+                  Icons.language,
+                  color: AppPalette.deepGreen,
+                ),
                 suffixIcon: _apiUrlController.text.isNotEmpty
                     ? IconButton(
-                        icon: const Icon(Icons.clear, color: AppPalette.deepGreen),
+                        icon: const Icon(
+                          Icons.clear,
+                          color: AppPalette.deepGreen,
+                        ),
                         onPressed: () {
                           _apiUrlController.clear();
                           setState(() {});
@@ -274,11 +277,8 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
                   const SizedBox(height: 8),
                   const Text(
-                    'Jika WiFi tidak bisa digunakan, coba ADB reverse di terminal:\n\nadb reverse tcp:8000 tcp:8000\n\nKemudian gunakan URL default app.',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Color(0xFF1565C0),
-                    ),
+                    'Jika WiFi tidak bisa digunakan, coba ADB reverse di terminal:\n\nadb reverse tcp:8000 tcp:8000\n\nKemudian gunakan URL: http://localhost:8000/api',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF1565C0)),
                   ),
                 ],
               ),
@@ -315,10 +315,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
         Expanded(
           child: Text(
             text,
-            style: const TextStyle(
-              fontSize: 13,
-              color: Color(0xFF8B7355),
-            ),
+            style: const TextStyle(fontSize: 13, color: Color(0xFF8B7355)),
           ),
         ),
       ],

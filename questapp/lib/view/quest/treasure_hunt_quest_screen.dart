@@ -378,7 +378,7 @@ class _TreasureHuntQuestScreenState extends State<TreasureHuntQuestScreen> {
                           Positioned(
                             top: 18,
                             left: 18,
-                            child: Icon(Icons.map_outlined, size: 36, color: const Color(0xFFB45309).withOpacity(0.6)),
+                            child: Icon(Icons.map_outlined, size: 36, color: const Color(0xFFB45309).withValues(alpha: 0.6)),
                           ),
                           Positioned(
                             left: 34,
@@ -623,7 +623,7 @@ class _TreasureGridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = const Color(0xFFF2C97D).withOpacity(0.35)
+      ..color = const Color(0xFFF2C97D).withValues(alpha: 0.35)
       ..strokeWidth = 1;
 
     for (double x = 0; x < size.width; x += 26) {

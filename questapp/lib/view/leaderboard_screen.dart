@@ -8,8 +8,8 @@ class LeaderboardScreen extends StatefulWidget {
 }
 
 class _LeaderboardScreenState extends State<LeaderboardScreen> {
-  String _activeTier = 'Bronze';
-  int _currentPoints = 2840;
+  final String _activeTier = 'Bronze';
+  final int _currentPoints = 2840;
   final List<_LeaderboardEntry> _entries = const [
     _LeaderboardEntry('Nadia Putri', 'Gold', 4820, 41, 'active'),
     _LeaderboardEntry('Raka Pratama', 'Gold', 4590, 38, 'active'),
@@ -227,9 +227,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.14),
+                          color: Colors.white.withValues(alpha: 0.14),
                           borderRadius: BorderRadius.circular(999),
-                          border: Border.all(color: Colors.white.withOpacity(0.16)),
+                          border: Border.all(color: Colors.white.withValues(alpha: 0.16)),
                         ),
                         child: Text(
                           '#${_entries.indexWhere((e) => e.isCurrentUser) + 1}',
@@ -245,9 +245,9 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.12),
+                      color: Colors.white.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white.withOpacity(0.12)),
+                      border: Border.all(color: Colors.white.withValues(alpha: 0.12)),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -307,7 +307,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                           child: LinearProgressIndicator(
                             value: progress,
                             minHeight: 9,
-                            backgroundColor: Colors.white.withOpacity(0.18),
+                            backgroundColor: Colors.white.withValues(alpha: 0.18),
                             valueColor: const AlwaysStoppedAnimation(Color(0xFFF59E0B)),
                           ),
                         ),
@@ -315,7 +315,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         Text(
                           'Tap badge tier untuk melihat reward yang tersedia.',
                           style: TextStyle(
-                            color: Colors.white.withOpacity(0.88),
+                            color: Colors.white.withValues(alpha: 0.88),
                             fontSize: 12,
                             height: 1.4,
                           ),
@@ -363,7 +363,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
               child: ListView.separated(
                 padding: const EdgeInsets.fromLTRB(20, 4, 20, 20),
                 itemCount: _entries.length,
-                separatorBuilder: (_, __) => const SizedBox(height: 10),
+                separatorBuilder: (context, index) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final entry = _entries[index];
                   final isUser = entry.isCurrentUser;
@@ -384,7 +384,7 @@ class _LeaderboardScreenState extends State<LeaderboardScreen> {
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withOpacity(0.03),
+                            color: Colors.black.withValues(alpha: 0.03),
                             blurRadius: 12,
                             offset: const Offset(0, 4),
                           ),
@@ -551,9 +551,9 @@ class _TierBadge extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
         decoration: BoxDecoration(
-          color: color.withOpacity(0.12),
+          color: color.withValues(alpha: 0.12),
           borderRadius: BorderRadius.circular(999),
-          border: Border.all(color: color.withOpacity(0.35)),
+          border: Border.all(color: color.withValues(alpha: 0.35)),
         ),
         child: Text(
           tier,

@@ -29,9 +29,9 @@ class AuthShell extends StatelessWidget {
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Colors.black.withOpacity(0.16),
-                    Colors.black.withOpacity(0.24),
-                    Colors.black.withOpacity(0.36),
+                    Colors.black.withValues(alpha: 0.16),
+                    Colors.black.withValues(alpha: 0.24),
+                    Colors.black.withValues(alpha: 0.36),
                   ],
                 ),
               ),
@@ -43,7 +43,7 @@ class AuthShell extends StatelessWidget {
               child: Container(
                 padding: const EdgeInsets.fromLTRB(18, 26, 18, 22),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.96),
+                  color: Colors.white.withValues(alpha: 0.96),
                   borderRadius: BorderRadius.circular(34),
                   boxShadow: const [
                     BoxShadow(

@@ -1,7 +1,8 @@
 allprojects {
-    repositories {
+repositories {
         google()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 

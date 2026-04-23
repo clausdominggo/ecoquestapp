@@ -51,7 +51,7 @@ class _TutorialWizardScreenState extends State<TutorialWizardScreen> {
                           shape: BoxShape.circle,
                           color: index == _currentPage
                               ? AppPalette.deepGreen
-                              : AppPalette.textMuted.withOpacity(0.3),
+                              : AppPalette.textMuted.withValues(alpha: 0.3),
                         ),
                       );
                     }),
@@ -163,7 +163,7 @@ class _TutorialPage1 extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.deepGreen.withOpacity(0.1),
+              color: AppPalette.deepGreen.withValues(alpha: 0.1),
             ),
             child: const Icon(
               Icons.map_outlined,
@@ -194,7 +194,7 @@ class _TutorialPage1 extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppPalette.deepGreen.withOpacity(0.08),
+              color: AppPalette.deepGreen.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Column(
@@ -250,7 +250,7 @@ class _TutorialPage2 extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.deepGreen.withOpacity(0.1),
+              color: AppPalette.deepGreen.withValues(alpha: 0.1),
             ),
             child: const Icon(
               Icons.category_outlined,
@@ -290,7 +290,7 @@ class _TutorialPage2 extends StatelessWidget {
               margin: const EdgeInsets.only(bottom: 10),
               decoration: BoxDecoration(
                 color: Colors.white,
-                border: Border.all(color: AppPalette.textMuted.withOpacity(0.2)),
+                border: Border.all(color: AppPalette.textMuted.withValues(alpha: 0.2)),
                 borderRadius: BorderRadius.circular(10),
               ),
               child: Row(
@@ -349,7 +349,7 @@ class _TutorialPage3 extends StatelessWidget {
             height: 120,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: AppPalette.deepGreen.withOpacity(0.1),
+              color: AppPalette.deepGreen.withValues(alpha: 0.1),
             ),
             child: const Icon(
               Icons.card_giftcard_outlined,
@@ -412,7 +412,7 @@ class _TutorialPage3 extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: AppPalette.deepGreen.withOpacity(0.08),
+              color: AppPalette.deepGreen.withValues(alpha: 0.08),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Column(
@@ -473,7 +473,7 @@ class _RewardCard extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         color: Colors.white,
-        border: Border.all(color: AppPalette.textMuted.withOpacity(0.2)),
+        border: Border.all(color: AppPalette.textMuted.withValues(alpha: 0.2)),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(

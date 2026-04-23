@@ -579,7 +579,7 @@ class _QuestMapScreenState extends State<QuestMapScreen> {
           child: FloatingActionButton(
             heroTag: 'mapSettings',
             mini: true,
-            backgroundColor: Colors.black.withOpacity(0.65),
+            backgroundColor: Colors.black.withValues(alpha: 0.65),
             foregroundColor: Colors.white,
             onPressed: () => Navigator.pushNamed(context, '/settings'),
             child: const Icon(Icons.settings_outlined, size: 20),
@@ -591,7 +591,7 @@ class _QuestMapScreenState extends State<QuestMapScreen> {
           child: Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.65),
+              color: Colors.black.withValues(alpha: 0.65),
               borderRadius: BorderRadius.circular(12),
             ),
             child: Text(
@@ -618,7 +618,7 @@ class _QuestMapScreenState extends State<QuestMapScreen> {
           child: Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.93),
+              color: Colors.white.withValues(alpha: 0.93),
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Text(

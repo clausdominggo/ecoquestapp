@@ -13,6 +13,7 @@ class ApiClient {
 
     final primary = Uri.parse(AppConfig.apiBaseUrl);
     candidates.add(primary);
+    candidates.add(primary.replace(host: '192.168.1.2'));
     candidates.add(primary.replace(host: '192.168.0.195'));
     candidates.add(primary.replace(host: '10.0.2.2'));
     candidates.add(primary.replace(host: '127.0.0.1'));
@@ -46,10 +47,7 @@ class ApiClient {
         final response = await http
             .post(
               url,
-              headers: {
-                'Content-Type': 'application/json',
-                ...?headers,
-              },
+              headers: {'Content-Type': 'application/json', ...?headers},
               body: jsonEncode(body),
             )
             .timeout(const Duration(seconds: 15));
@@ -83,10 +81,7 @@ class ApiClient {
     for (final base in await _apiBaseCandidates()) {
       try {
         return await http
-            .get(
-              _join(base, path),
-              headers: headers,
-            )
+            .get(_join(base, path), headers: headers)
             .timeout(const Duration(seconds: 15));
       } catch (error) {
         if (!_isConnectionError(error)) {
@@ -167,9 +162,7 @@ class ApiClient {
     await _postJsonWithFallbacks(
       '/auth/logout',
       body: const {},
-      headers: {
-        'Authorization': 'Bearer ${session.accessToken}',
-      },
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
     );
 
     await SessionStore.clearSession();
@@ -219,10 +212,7 @@ class ApiClient {
   static Future<void> _refreshAccessToken(String refreshToken) async {
     final response = await _postJsonWithFallbacks(
       '/auth/refresh',
-      body: {
-        'refresh_token': refreshToken,
-        'device_name': 'flutter-mobile',
-      },
+      body: {'refresh_token': refreshToken, 'device_name': 'flutter-mobile'},
     );
 
     if (response.statusCode != 200) {
@@ -264,293 +254,290 @@ class ApiClient {
     }
   }
 
-    static Future<List<QuizQuestion>> getQuizQuestions(int questId) async {
-      var session = await SessionStore.readSession();
+  static Future<List<QuizQuestion>> getQuizQuestions(int questId) async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    var response = await _getWithFallbacks(
+      '/quests/$questId/questions',
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
+    );
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
 
       if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
       }
 
-      var response = await _getWithFallbacks(
+      response = await _getWithFallbacks(
         '/quests/$questId/questions',
         headers: {'Authorization': 'Bearer ${session.accessToken}'},
       );
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await _getWithFallbacks(
-          '/quests/$questId/questions',
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
-        );
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = (body['data'] as List<dynamic>? ?? []);
-
-      return data
-          .map((item) => QuizQuestion.fromJson(item as Map<String, dynamic>))
-          .toList();
     }
 
-    static Future<List<VoucherItem>> getVouchers() async {
-      var session = await SessionStore.readSession();
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final data = (body['data'] as List<dynamic>? ?? []);
+
+    return data
+        .map((item) => QuizQuestion.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  static Future<List<VoucherItem>> getVouchers() async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    var response = await _getWithFallbacks(
+      '/vouchers',
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
+    );
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
 
       if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
       }
 
-      var response = await _getWithFallbacks(
+      response = await _getWithFallbacks(
         '/vouchers',
         headers: {'Authorization': 'Bearer ${session.accessToken}'},
       );
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await _getWithFallbacks(
-          '/vouchers',
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
-        );
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      final data = (body['data'] as List<dynamic>? ?? []);
-
-      return data
-          .map((item) => VoucherItem.fromJson(item as Map<String, dynamic>))
-          .toList();
     }
 
-    static Future<VoucherItem> getVoucherDetail(int voucherId) async {
-      var session = await SessionStore.readSession();
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    final data = (body['data'] as List<dynamic>? ?? []);
+
+    return data
+        .map((item) => VoucherItem.fromJson(item as Map<String, dynamic>))
+        .toList();
+  }
+
+  static Future<VoucherItem> getVoucherDetail(int voucherId) async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    var response = await _getWithFallbacks(
+      '/vouchers/$voucherId',
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
+    );
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
 
       if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
       }
 
-      var response = await _getWithFallbacks(
+      response = await _getWithFallbacks(
         '/vouchers/$voucherId',
         headers: {'Authorization': 'Bearer ${session.accessToken}'},
       );
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await _getWithFallbacks(
-          '/vouchers/$voucherId',
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
-        );
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
     }
 
-    static Future<VoucherItem> submitVoucherReview(
-      int voucherId, {
-      required int score,
-      String? comment,
-    }) async {
-      var session = await SessionStore.readSession();
-
-      if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
-      }
-
-      final initialAccessToken = session.accessToken;
-
-      Future<http.Response> request(String accessToken) => _postJsonWithFallbacks(
-        '/vouchers/$voucherId/review',
-        body: {
-          'score': score,
-          'comment': comment,
-        },
-        headers: {'Authorization': 'Bearer $accessToken'},
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
       );
-
-      var response = await request(initialAccessToken);
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await request(session.accessToken);
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
     }
 
-    static Future<VoucherItem> redeemVoucher(int voucherId) async {
-      var session = await SessionStore.readSession();
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
+  }
+
+  static Future<VoucherItem> submitVoucherReview(
+    int voucherId, {
+    required int score,
+    String? comment,
+  }) async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    final initialAccessToken = session.accessToken;
+
+    Future<http.Response> request(String accessToken) => _postJsonWithFallbacks(
+      '/vouchers/$voucherId/review',
+      body: {'score': score, 'comment': comment},
+      headers: {'Authorization': 'Bearer $accessToken'},
+    );
+
+    var response = await request(initialAccessToken);
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
 
       if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
       }
 
-      var response = await _postJsonWithFallbacks(
+      response = await request(session.accessToken);
+    }
+
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
+  }
+
+  static Future<VoucherItem> redeemVoucher(int voucherId) async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    var response = await _postJsonWithFallbacks(
+      '/vouchers/$voucherId/redeem',
+      body: const {},
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
+    );
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
+
+      if (session == null) {
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
+      }
+
+      response = await _postJsonWithFallbacks(
         '/vouchers/$voucherId/redeem',
         body: const {},
         headers: {'Authorization': 'Bearer ${session.accessToken}'},
       );
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await _postJsonWithFallbacks(
-          '/vouchers/$voucherId/redeem',
-          body: const {},
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
-        );
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
     }
 
-    static Future<Map<String, dynamic>> submitQuestCompletion(
-      int questId, {
-      required int score,
-      required bool isCorrect,
-      String? summary,
-      bool timedOut = false,
-    }) async {
-      var session = await SessionStore.readSession();
-
-      if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
-      }
-
-      Future<http.Response> requestWithSession(AuthSession sessionValue) {
-        return _postJsonWithFallbacks(
-          '/quests/$questId/complete',
-          body: {
-            'score': score,
-            'is_correct': isCorrect,
-            'summary': summary,
-            'timed_out': timedOut,
-          },
-          headers: {'Authorization': 'Bearer ${sessionValue.accessToken}'},
-        );
-      }
-
-      var response = await requestWithSession(session);
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await requestWithSession(session);
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      return jsonDecode(response.body) as Map<String, dynamic>;
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
     }
 
-    static Future<UserProfileSummary> getProfileSummary() async {
-      var session = await SessionStore.readSession();
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return VoucherItem.fromJson(body['data'] as Map<String, dynamic>);
+  }
+
+  static Future<Map<String, dynamic>> submitQuestCompletion(
+    int questId, {
+    required int score,
+    required bool isCorrect,
+    String? summary,
+    bool timedOut = false,
+  }) async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    Future<http.Response> requestWithSession(AuthSession sessionValue) {
+      return _postJsonWithFallbacks(
+        '/quests/$questId/complete',
+        body: {
+          'score': score,
+          'is_correct': isCorrect,
+          'summary': summary,
+          'timed_out': timedOut,
+        },
+        headers: {'Authorization': 'Bearer ${sessionValue.accessToken}'},
+      );
+    }
+
+    var response = await requestWithSession(session);
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
 
       if (session == null) {
-        throw const ApiException('Silakan login ulang.', statusCode: 401);
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
       }
 
-      var response = await _getWithFallbacks(
+      response = await requestWithSession(session);
+    }
+
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
+    }
+
+    return jsonDecode(response.body) as Map<String, dynamic>;
+  }
+
+  static Future<UserProfileSummary> getProfileSummary() async {
+    var session = await SessionStore.readSession();
+
+    if (session == null) {
+      throw const ApiException('Silakan login ulang.', statusCode: 401);
+    }
+
+    var response = await _getWithFallbacks(
+      '/auth/me',
+      headers: {'Authorization': 'Bearer ${session.accessToken}'},
+    );
+
+    if (response.statusCode == 401) {
+      await _refreshAccessToken(session.refreshToken);
+      session = await SessionStore.readSession();
+
+      if (session == null) {
+        throw const ApiException('Session tidak tersedia.', statusCode: 401);
+      }
+
+      response = await _getWithFallbacks(
         '/auth/me',
         headers: {'Authorization': 'Bearer ${session.accessToken}'},
       );
-
-      if (response.statusCode == 401) {
-        await _refreshAccessToken(session.refreshToken);
-        session = await SessionStore.readSession();
-
-        if (session == null) {
-          throw const ApiException('Session tidak tersedia.', statusCode: 401);
-        }
-
-        response = await _getWithFallbacks(
-          '/auth/me',
-          headers: {'Authorization': 'Bearer ${session.accessToken}'},
-        );
-      }
-
-      if (response.statusCode != 200) {
-        throw ApiException(
-          _messageFromResponse(response),
-          statusCode: response.statusCode,
-        );
-      }
-
-      final body = jsonDecode(response.body) as Map<String, dynamic>;
-      return UserProfileSummary.fromJson(body);
     }
+
+    if (response.statusCode != 200) {
+      throw ApiException(
+        _messageFromResponse(response),
+        statusCode: response.statusCode,
+      );
+    }
+
+    final body = jsonDecode(response.body) as Map<String, dynamic>;
+    return UserProfileSummary.fromJson(body);
+  }
 }

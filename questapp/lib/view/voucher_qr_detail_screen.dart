@@ -45,7 +45,7 @@ class _VoucherQrDetailScreenState extends State<VoucherQrDetailScreen> {
                   border: Border.all(color: Colors.grey[200]!),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.05),
+                      color: Colors.black.withValues(alpha: 0.05),
                       blurRadius: 14,
                       offset: const Offset(0, 5),
                     ),
@@ -145,7 +145,7 @@ class _VoucherQrDetailScreenState extends State<VoucherQrDetailScreen> {
                               Positioned.fill(
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: Colors.black.withOpacity(0.52),
+                                    color: Colors.black.withValues(alpha: 0.52),
                                     borderRadius: BorderRadius.circular(24),
                                   ),
                                   child: Center(
@@ -277,7 +277,7 @@ class _StatusPill extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
+        color: color.withValues(alpha: 0.12),
         borderRadius: BorderRadius.circular(999),
       ),
       child: Text(
@@ -331,7 +331,7 @@ class _QrPatternPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final paint = Paint()
-      ..color = Colors.black.withOpacity(0.03)
+      ..color = Colors.black.withValues(alpha: 0.03)
       ..strokeWidth = 1;
 
     for (double x = 0; x < size.width; x += 16) {
